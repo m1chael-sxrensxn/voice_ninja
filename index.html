@@ -165,21 +165,32 @@ function visualize(stream,canvas){
         ctx.fillStyle="#111";
         ctx.fillRect(0,0,canvas.width,canvas.height);
 
-        const barWidth=canvas.width/data.length;
+        const barWidth=canvas.width/data.length/2;
 
-        for(let i=0;i<data.length;i++){
-
+        for(let i=data.length;i>=0;i--){
             const h=data[i]/255*canvas.height;
 
             ctx.fillStyle="lime";
 
             ctx.fillRect(
-                i*barWidth,
+                (data.length - i)*barWidth,
                 canvas.height/2-h/2,
                 barWidth-1,
                 h
             );
+        }
 
+        for(let i=0;i<data.length;i++){
+            const h=data[i]/255*canvas.height;
+
+            ctx.fillStyle="lime";
+
+            ctx.fillRect(
+                (data.length+i)*barWidth,
+                canvas.height/2-h/2,
+                barWidth-1,
+                h
+            );
         }
 
     }

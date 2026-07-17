@@ -37,6 +37,7 @@ textarea{
 </style>
 </head>
 <body>
+<pre id="log"></pre>
 
 <h1>WebRTC Voice Chat</h1>
 
@@ -75,44 +76,58 @@ const config={
     ]
 };
 
+function log(msg) {
+    const el = document.getElementById("log");
+    el.textContent += msg + "\n";
+    el.scrollTop = el.scrollHeight;
+}
+
 async function start(){
+    log("starting mic");
     console.log("starting mic");
-    localStream=await navigator.mediaDevices.getUserMedia({
-        audio:true,
-        video:false
-    });
 
-    visualize(localStream,document.getElementById("localCanvas"));
+    try {
+        localStream=await navigator.mediaDevices.getUserMedia({
+            audio:true,
+            video:false
+        });
+        log("got audio stream");
 
-    pc=new RTCPeerConnection(config);
+        visualize(localStream,document.getElementById("localCanvas"));
 
-    localStream.getTracks().forEach(track=>{
-        pc.addTrack(track,localStream);
-    });
+        pc=new RTCPeerConnection(config);
 
-    pc.ontrack=e=>{
-        const stream=e.streams[0];
-        remoteAudio.srcObject=stream;
-        visualize(stream,document.getElementById("remoteCanvas"));
-    };
+        localStream.getTracks().forEach(track=>{
+            pc.addTrack(track,localStream);
+        });
 
-    pc.onicecandidate=e=>{
-        if(!e.candidate){
-            localSDP.value=JSON.stringify(pc.localDescription);
-        }
-    };
+        pc.ontrack=e=>{
+            const stream=e.streams[0];
+            remoteAudio.srcObject=stream;
+            visualize(stream,document.getElementById("remoteCanvas"));
+        };
+
+        pc.onicecandidate=e=>{
+            if(!e.candidate){
+                localSDP.value=JSON.stringify(pc.localDescription);
+            }
+        };
+    } catch(error) {
+        log(error);
+    }
+
 }
 
 document.getElementById("start").onclick=start;
 
-call.onclick=async()=>{
+document.getElementById("call").onclick=async()=>{
 
     const offer=await pc.createOffer();
     await pc.setLocalDescription(offer);
 
 };
 
-answer.onclick=async()=>{
+document.getElementById("answer").onclick=async()=>{
 
     const remote=JSON.parse(remoteSDP.value);
 

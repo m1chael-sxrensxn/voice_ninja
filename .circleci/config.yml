@@ -22,7 +22,7 @@ jobs:
             apk add --no-cache wget tar
             wget https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/latest/download/docker-credential-gcr_linux_amd64-2.1.32.tar.gz
             tar xzf docker-credential-gcr_linux_amd64-2.1.32.tar.gz
-            sudo mv docker-credential-gcr /usr/local/bin
+            mv docker-credential-gcr /usr/local/bin
             echo "$GCLOUD_SERVICE_KEY" > /tmp/gcp-key.json
             export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-key.json
             docker-credential-gcr configure-docker --registries=us-west4-docker.pkg.dev

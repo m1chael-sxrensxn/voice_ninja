@@ -24,7 +24,7 @@ jobs:
             tar -xzf google-cloud-cli-linux-x86_64.tar.gz
             ./google-cloud-sdk/install.sh --quiet
             rm google-cloud-cli-linux-x86_64.tar.gz
-            cp ./google-cloud-sdk/bin/gcloud /usr/bin
+            ln -s ./google-cloud-sdk/bin/gcloud /usr/bin/gcloud
             echo "$GCLOUD_SERVICE_KEY" > "$HOME/key.json"
             gcloud auth activate-service-account --key-file="$HOME/key.json"
             gcloud config set project "$GOOGLE_PROJECT_ID"

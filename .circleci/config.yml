@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Docker login to be able to push images
           command: |
-            apk add --no-cache bash curl python3 libc6-compat ca-certificates tar
+            apk add --no-cache bash curl libcurl python3 libc6-compat ca-certificates tar
             curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
             tar -xzf google-cloud-cli-linux-x86_64.tar.gz
             ./google-cloud-sdk/install.sh --quiet

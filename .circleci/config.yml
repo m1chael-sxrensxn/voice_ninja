@@ -20,7 +20,7 @@ jobs:
           name: Docker login to be able to push images
           command: |
             apk add --no-cache wget tar
-            wget https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/latest/download/docker-credential-gcr_linux_amd64.tar.gz
+            wget https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/latest/download/docker-credential-gcr_linux_amd64-2.1.32.tar.gz
             tar xz docker-credential-gcr_linux_amd64.tar.gz
             sudo mv docker-credential-gcr /usr/local/bin
             echo "$GCLOUD_SERVICE_KEY" > /tmp/gcp-key.json

@@ -22,7 +22,7 @@ jobs:
             apk add --no-cache bash wget python3 libc6-compat ca-certificates tar
             wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz
             tar -xzf google-cloud-cli-linux-x86_64.tar.gz
-            ./google-cloud-sdk/install.sh --quiet --verbosity=debug
+            ./google-cloud-sdk/install.sh
             rm google-cloud-cli-linux-x86_64.tar.gz
             ln -s ./google-cloud-sdk/bin/gcloud /usr/bin/gcloud
             which gcloud

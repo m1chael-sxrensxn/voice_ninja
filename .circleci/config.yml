@@ -10,7 +10,31 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
+  build-docker:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - run:
+          name: Docker login to be able to push images
+          command: |
+            apk add --no-cache google-cloud-cli
+            echo "$GCLOUD_SERVICE_KEY" > "$HOME/key.json"
+            gcloud auth activate-service-account --key-file="$HOME/key.json"
+            gcloud config set project "$GOOGLE_PROJECT_ID"
+            gcloud auth configure-docker us-west4-docker.pkg.dev --quiet
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build/Push Janus Gateway
+          command: |
+            docker build -t us-west4-docker.pkg.dev/$GOOGLE_PROJECT_ID/backend/janus-gateway:$CIRCLE_WORKFLOW_ID ./janus_gateway
+            docker push us-west4-docker.pkg.dev/$GOOGLE_PROJECT_ID/backend/janus-gateway:$CIRCLE_WORKFLOW_ID
+
 workflows:
   say-hello-workflow:
     jobs:
       - say-hello
+      - build-docker:
+          filters:
+            branches:
+              only: [ main ]

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebRTC Voice Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #222;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 30px;
+        }
+
+        canvas {
+            background: #111;
+            border: 2px solid #555;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        textarea {
+            width: 90%;
+            height: 120px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <pre id="log"></pre>
+
+    <h1>WebRTC Voice Chat</h1>
+
+    <button id="start">Start Microphone</button>
+    <button id="call">Create Offer</button>
+    <button id="answer">Create Answer</button>
+
+    <div class="container">
+        <div>
+            <h2>Local Voice</h2>
+            <canvas id="localCanvas" width="250" height="120"></canvas>
+        </div>
+
+        <div>
+            <h2>Remote Voice</h2>
+            <canvas id="remoteCanvas" width="250" height="120"></canvas>
+        </div>
+    </div>
+
+    <audio id="remoteAudio" autoplay></audio>
+
+    <script type="module" src="src/index.js"></script>
+
+</body>
+
+</html>

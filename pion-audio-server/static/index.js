@@ -93,7 +93,7 @@ pc.ontrack = (event) => {
     visualize(stream, document.getElementById("remoteCanvas"));
 };
 
-const response = await fetch("http://127.0.0.1:9090/offer", {
+const response = await fetch("http://127.0.0.1:8080/offer", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"

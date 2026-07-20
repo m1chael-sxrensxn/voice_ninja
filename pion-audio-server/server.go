@@ -35,6 +35,8 @@ func main() {
 
 	api := webrtc.NewAPI()
 
+	mux.Handle("/", http.FileServer(http.Dir("./static")))
+
 	mux.HandleFunc("/offer", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("offer received")
 
@@ -128,6 +130,6 @@ func main() {
 
 	})
 
-	log.Println("Listening on :9090")
-	log.Fatal(http.ListenAndServe(":9090", cors(mux)))
+	log.Println("Listening on :8080")
+	log.Fatal(http.ListenAndServe(":8080", cors(mux)))
 }

@@ -68,7 +68,6 @@ const stream = await navigator.mediaDevices.getUserMedia({
 
 stream.getTracks().forEach(track => {
     pc.addTrack(track, stream);
-    visualize(stream, document.getElementById("localCanvas"));
 });
 
 const offer = await pc.createOffer();

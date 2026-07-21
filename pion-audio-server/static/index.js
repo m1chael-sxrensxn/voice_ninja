@@ -1,5 +1,14 @@
 console.log("Hello This is a Javascript project.");
 
+function resizeCanvas() {
+    const canvas = document.getElementById("remoteCanvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
 function visualize(stream, canvas) {
 
     const ctx = canvas.getContext("2d");
@@ -22,16 +31,14 @@ function visualize(stream, canvas) {
 
         analyser.getByteFrequencyData(data);
 
-        ctx.fillStyle = "#111";
+        ctx.fillStyle = "#272932";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const barWidth = canvas.width / data.length / 2;
+        ctx.fillStyle = "#FDF500"
 
         for (let i = data.length; i >= 0; i--) {
             const h = data[i] / 255 * canvas.height;
-
-            ctx.fillStyle = "lime";
-
             ctx.fillRect(
                 (data.length - i) * barWidth,
                 canvas.height / 2 - h / 2,
@@ -42,9 +49,6 @@ function visualize(stream, canvas) {
 
         for (let i = 0; i < data.length; i++) {
             const h = data[i] / 255 * canvas.height;
-
-            ctx.fillStyle = "lime";
-
             ctx.fillRect(
                 (data.length + i) * barWidth,
                 canvas.height / 2 - h / 2,

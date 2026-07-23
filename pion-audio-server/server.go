@@ -73,6 +73,27 @@ func main() {
 			log.Println("Connection State:", state.String())
 		})
 
+		peerConnection.OnICEConnectionStateChange(func(state webrtc.ICEConnectionState) {
+			log.Printf("ICE Connection State: %s", state.String())
+		})
+
+		peerConnection.OnICEGatheringStateChange(func(state webrtc.ICEGatheringState) {
+			log.Printf("ICE Gathering State: %s", state.String())
+		})
+
+		peerConnection.OnSignalingStateChange(func(state webrtc.SignalingState) {
+			log.Printf("Signaling State: %s", state.String())
+		})
+
+		peerConnection.OnICECandidate(func(c *webrtc.ICECandidate) {
+			if c == nil {
+				log.Println("Finished gathering")
+				return
+			}
+
+			log.Printf("Candidate: %s", c.ToJSON().Candidate)
+		})
+
 		peerConnection.OnTrack(func(track *webrtc.TrackRemote, receiver *webrtc.RTPReceiver) {
 			log.Println("Incoming Track")
 			log.Println("Kind:", track.Kind())

@@ -1,5 +1,3 @@
-console.log("Hello This is a Javascript project.");
-
 function resizeCanvas() {
     const canvas = document.getElementById("remoteCanvas");
     canvas.width = window.innerWidth;
@@ -96,7 +94,7 @@ pc.ontrack = (event) => {
     visualize(stream, document.getElementById("remoteCanvas"));
 };
 
-const response = await fetch("http://127.0.0.1:8080/offer", {
+const response = await fetch("/offer", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"

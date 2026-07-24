@@ -35,14 +35,6 @@ jobs:
             docker build -t us-west4-docker.pkg.dev/$GOOGLE_PROJECT_ID/backend/pion-audio-server:$CIRCLE_WORKFLOW_ID ./pion-audio-server
             docker push us-west4-docker.pkg.dev/$GOOGLE_PROJECT_ID/backend/pion-audio-server:$CIRCLE_WORKFLOW_ID
 
-      - run:
-          name: Build/Push Janus Gateway
-          command: |
-            echo "$GCLOUD_SERVICE_KEY" > /tmp/gcp-key.json
-            export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-key.json
-            docker build -t us-west4-docker.pkg.dev/$GOOGLE_PROJECT_ID/backend/janus-gateway:$CIRCLE_WORKFLOW_ID ./janus_gateway
-            docker push us-west4-docker.pkg.dev/$GOOGLE_PROJECT_ID/backend/janus-gateway:$CIRCLE_WORKFLOW_ID
-
 workflows:
   say-hello-workflow:
     jobs:

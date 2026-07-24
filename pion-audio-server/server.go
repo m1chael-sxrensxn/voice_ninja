@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"sync"
 
 	"github.com/pion/webrtc/v4"
 )
@@ -13,23 +15,23 @@ type SDP struct {
 	Type string `json:"type"`
 }
 
-func cors(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
+	var connectionCountMu sync.Mutex
+	var connectionsDatachannels sync.Map
+	connectionCount := 0
+
+	updateConnectionCount := func() {
+		connectionsDatachannels.Range(func(key, value any) bool {
+			dc := value.(*webrtc.DataChannel)
+			err := dc.SendText(fmt.Sprintf("%d", connectionCount))
+			if err != nil {
+				log.Println("failed to update data channel", err)
+			}
+
+			return true
+		})
+	}
+
 	mux := http.NewServeMux()
 	config := webrtc.Configuration{}
 
@@ -69,8 +71,40 @@ func main() {
 			panic(err)
 		}
 
+		// create the data channel and store it as the server connections
+		var connectionId *uint16
+		dc, err := peerConnection.CreateDataChannel("connections", &webrtc.DataChannelInit{})
+		dc.OnError(func(err error) {
+			log.Println("data channel error", err)
+		})
+
+		dc.OnOpen(func() {
+			connectionId = dc.ID()
+			connectionsDatachannels.Store(connectionId, dc)
+			connectionCountMu.Lock()
+			connectionCount += 1
+			connectionCountMu.Unlock()
+			updateConnectionCount()
+		})
+
 		peerConnection.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
 			log.Println("Connection State:", state.String())
+
+			removeDataChannel := func() {
+				// Remove connection data channel from the server state
+				connectionsDatachannels.Delete(connectionId)
+				connectionCountMu.Lock()
+				connectionCount -= 1
+				connectionCountMu.Unlock()
+				updateConnectionCount()
+			}
+
+			switch state.String() {
+			case "closed":
+				removeDataChannel()
+			case "disconnected":
+				removeDataChannel()
+			}
 		})
 
 		peerConnection.OnICEConnectionStateChange(func(state webrtc.ICEConnectionState) {
@@ -152,5 +186,5 @@ func main() {
 	})
 
 	log.Println("Listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", cors(mux)))
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }

@@ -72,6 +72,27 @@ stream.getTracks().forEach(track => {
     pc.addTrack(track, stream);
 });
 
+const channel = pc.createDataChannel("connections", {
+    ordered: true,
+});
+
+const connectionsCount = document.getElementById("connections")
+
+pc.ondatachannel = (event) => {
+    console.log("Received channel:", event);
+    const channel = event.channel;
+
+    switch (channel.label) {
+        case "connections":
+            console.log('adding callback to connections channel')
+            channel.onmessage = (msg) => {
+                console.log(msg);
+                connectionsCount.innerText = msg.data;
+            }
+            break;
+    }
+};
+
 const offer = await pc.createOffer();
 await pc.setLocalDescription(offer);
 
